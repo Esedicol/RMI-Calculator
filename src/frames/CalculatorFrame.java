@@ -4,6 +4,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.server.ServerNotActiveException;
+import java.util.ArrayList;
+import java.util.Stack;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -11,11 +14,28 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import main.Client;
+import main.Server;
+
 public class CalculatorFrame implements ActionListener {
-	private static JTextField inputBox;
+	public static JTextField inputBox;
+	public static JTextArea message;
+
+	public static Client cl = new Client();
+	public static ServerFrame sf;
+	public static Server sv;
+	public static boolean connected = Client.connect();
+	Stack<String> stack = new Stack<String>();
+	String operator;
 
 	public static void main(String[] args) {
-		createWindow();
+		if(connected == true) {
+			createWindow();
+			message.append(" Succesfully connected to the Sever");
+			message.append(inputBox.getText());
+		} else {
+			message.append(" Failed to connect to the Sever");
+		}
 	}
 
 	private static void createWindow() {          
@@ -84,8 +104,8 @@ public class CalculatorFrame implements ActionListener {
 
 
 		frame.getContentPane().add(panel, BorderLayout.NORTH); 
-		
-		JTextArea message = new JTextArea();
+
+		message = new JTextArea();
 		frame.getContentPane().add(message);
 	}   
 
@@ -93,10 +113,82 @@ public class CalculatorFrame implements ActionListener {
 		String command = e.getActionCommand();
 		if (command.charAt(0) == 'C') {                      
 			inputBox.setText("");
-		}else if (command.charAt(0) == '=') {                    
-			inputBox.setText("Equals");
-		}else {                                
+		}
+		else if (command.charAt(0) == '=') {                    
+			ArrayList<String> values = calculate(inputBox.getText());
+
+			int val1 = Integer.parseInt(values.get(0));
+			int val2 = Integer.parseInt(values.get(1));
+
+			if(operator == "+") {
+				int ans = cl.calculate("add", val1, val2);
+				message(ans, val1, val2, "Add");
+			} else if(operator == "-") {
+				int ans = cl.calculate("subtract", val1, val2);
+				message(ans, val1, val2, "Subtract");
+			} else if(operator == "x") {
+				int ans = cl.calculate("multiply", val1, val2);
+				message(ans, val1, val2, "Multiply");
+			} else if(operator == "/") {
+				int ans = cl.calculate("divide", val1, val2);
+				message(ans, val1, val2, "Division");
+			}
+		}
+		else { 
+			if(isOperator(command)) {
+				operator = command;
+			}
 			inputBox.setText(inputBox.getText() + command);
 		}
 	}
+
+	public void message(int ans, int v1, int v2, String op) {
+		inputBox.setText(Integer.toString(ans));
+		message.setText(" Operand 1: " + v1 
+				+ "\n Opernad 2: " + v2
+				+ "\n Operation: " + op
+				+ "\n [FROM SERVER] Total: " 
+				+ ans);
+	}
+
+	public ArrayList<String> calculate(String s) {
+		ArrayList<String> elements = new ArrayList<String>();
+
+		// delete white spaces
+		s = s.replaceAll(" ", "");
+		char[] arr = s.toCharArray();
+
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < arr.length; i++) {
+
+			if (arr[i] >= '0' && arr[i] <= '9') {
+				sb.append(arr[i]);
+
+				if (i == arr.length - 1) {
+					stack.push(sb.toString());
+				}
+			} else {
+				if (sb.length() > 0) {
+					stack.push(sb.toString());
+					sb = new StringBuilder();
+				}
+			}	
+		}
+		while (!stack.isEmpty()) {
+			String elem = stack.pop();
+			elements.add(0, elem);
+		}
+
+		return elements;
+	}
+
+
+	public boolean isOperator(String s) {
+		if(s == "+" || s == "-" || s == "x" || s == "/") {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 } 

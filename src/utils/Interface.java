@@ -6,8 +6,8 @@ import java.rmi.server.ServerNotActiveException;
 
 public interface Interface extends Remote {
     // Calculator Operations
-    double add(double x, double y) throws RemoteException, ServerNotActiveException;
-    double subtract(double x, double y) throws RemoteException, ServerNotActiveException;
-    double multiply(double x, double y) throws RemoteException, ServerNotActiveException;
-    double divide(double x, double y) throws RemoteException, ServerNotActiveException;
+    int add(int x, int y) throws RemoteException, ServerNotActiveException;
+    int subtract(int x, int y) throws RemoteException, ServerNotActiveException;
+    int multiply(int x, int y) throws RemoteException, ServerNotActiveException;
+    int divide(int x, int y) throws RemoteException, ServerNotActiveException;
 }

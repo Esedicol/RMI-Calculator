@@ -1,25 +1,20 @@
 package frames;
 
-import java.awt.event.ActionEvent;
-import java.sql.SQLException;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+import main.Client;
+
 /**
  * @author Emmanuel Sedicol
  */
 public class ServerFrame extends JPanel  {
-
 	public JTextArea message;
 	public JFrame frame; 
-
-
-
+	
 	public ServerFrame() {
-
 		frame =  new JFrame("Server Frame");
 		frame.setBounds(300, 100, 500, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -39,10 +34,10 @@ public class ServerFrame extends JPanel  {
 		frame.getContentPane().add(clear);
 		clear.addActionListener(e -> message.setText(""));
 		frame.setVisible(true);
-
 	}
 
     public void displayOperations(String s){
         message.append(s + '\n');
     }
+
 }
