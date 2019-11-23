@@ -1,22 +1,23 @@
 package frames;
+
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.rmi.server.ServerNotActiveException;
 import java.util.ArrayList;
 import java.util.Stack;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
 import main.Client;
 import main.Server;
 
+/**
+ * @author Emmanuel Sedicol
+ */
 public class CalculatorFrame implements ActionListener {
 	public static JTextField inputBox;
 	public static JTextArea message;
@@ -38,6 +39,7 @@ public class CalculatorFrame implements ActionListener {
 		}
 	}
 
+
 	private static void createWindow() {          
 		JFrame frame = new JFrame("RMI Calculator");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -48,6 +50,7 @@ public class CalculatorFrame implements ActionListener {
 		frame.setVisible(true);
 	}
 
+	// Calculator GUI
 	private static void createUI(JFrame frame) {
 		JPanel panel = new JPanel();
 		CalculatorFrame calculator = new CalculatorFrame();
@@ -58,6 +61,8 @@ public class CalculatorFrame implements ActionListener {
 		inputBox = new JTextField(10); 
 		inputBox.setEditable(false);
 
+		
+		// JButtons
 		JButton button0 = new JButton("0");JButton button1 = new JButton("1");
 		JButton button2 = new JButton("2");JButton button3 = new JButton("3");
 		JButton button4 = new JButton("4");JButton button5 = new JButton("5");
@@ -69,6 +74,8 @@ public class CalculatorFrame implements ActionListener {
 		JButton buttonClear = new JButton("C");JButton buttonDot = new JButton(".");
 		JButton buttonEquals = new JButton("=");
 
+		
+		// Action Listener for all buttons
 		button1.addActionListener(calculator);button2.addActionListener(calculator);
 		button3.addActionListener(calculator);button4.addActionListener(calculator);
 		button5.addActionListener(calculator);button6.addActionListener(calculator);
@@ -111,15 +118,21 @@ public class CalculatorFrame implements ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
+		
+		// if 'C' clear text field
 		if (command.charAt(0) == 'C') {                      
 			inputBox.setText("");
 		}
+		
+		// if '=' pressed calculate
 		else if (command.charAt(0) == '=') {                    
 			ArrayList<String> values = calculate(inputBox.getText());
 
+			// get two operand values 
 			int val1 = Integer.parseInt(values.get(0));
 			int val2 = Integer.parseInt(values.get(1));
 
+			// check for entered operator and perfrom methods to get answer
 			if(operator == "+") {
 				int ans = cl.calculate("add", val1, val2);
 				message(ans, val1, val2, "Add");
@@ -134,7 +147,11 @@ public class CalculatorFrame implements ActionListener {
 				message(ans, val1, val2, "Division");
 			}
 		}
+		
+		// else display in text field
 		else { 
+			
+			// an operator is present we retrieve it
 			if(isOperator(command)) {
 				operator = command;
 			}
@@ -142,6 +159,7 @@ public class CalculatorFrame implements ActionListener {
 		}
 	}
 
+	// message method to be seen in client message area
 	public void message(int ans, int v1, int v2, String op) {
 		inputBox.setText(Integer.toString(ans));
 		message.setText(" Operand 1: " + v1 
@@ -154,13 +172,14 @@ public class CalculatorFrame implements ActionListener {
 	public ArrayList<String> calculate(String s) {
 		ArrayList<String> elements = new ArrayList<String>();
 
-		// delete white spaces
+		// delete white spaces 
 		s = s.replaceAll(" ", "");
 		char[] arr = s.toCharArray();
 
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < arr.length; i++) {
 
+			// if numeric values add to stack
 			if (arr[i] >= '0' && arr[i] <= '9') {
 				sb.append(arr[i]);
 
@@ -174,15 +193,17 @@ public class CalculatorFrame implements ActionListener {
 				}
 			}	
 		}
+		
+		// while stack is not empty we pop each element and add it into an array list
 		while (!stack.isEmpty()) {
 			String elem = stack.pop();
 			elements.add(0, elem);
 		}
-
 		return elements;
 	}
 
 
+	// method to check if string is an operator
 	public boolean isOperator(String s) {
 		if(s == "+" || s == "-" || s == "x" || s == "/") {
 			return true;

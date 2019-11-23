@@ -5,8 +5,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
-import main.Client;
-
 /**
  * @author Emmanuel Sedicol
  */
@@ -14,6 +12,7 @@ public class ServerFrame extends JPanel  {
 	public JTextArea message;
 	public JFrame frame; 
 	
+	// Simple server frame to display server messages 
 	public ServerFrame() {
 		frame =  new JFrame("Server Frame");
 		frame.setBounds(300, 100, 500, 500);
@@ -21,7 +20,7 @@ public class ServerFrame extends JPanel  {
 		frame.getContentPane().setLayout(null);
 
 		message = new JTextArea();
-		message.setBounds(0, 0, 500, 430);
+		message.setBounds(0, 0, 600, 430);
 		frame.getContentPane().add(message);
 
 		JButton exit = new JButton("EXIT");
@@ -36,6 +35,7 @@ public class ServerFrame extends JPanel  {
 		frame.setVisible(true);
 	}
 
+	// Methdod to append text to text area
     public void displayOperations(String s){
         message.append(s + '\n');
     }

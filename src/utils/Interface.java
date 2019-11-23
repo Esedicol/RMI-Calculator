@@ -4,6 +4,9 @@ import java.rmi.RemoteException;
 import java.rmi.server.ServerNotActiveException;
 
 
+/**
+ * @author Emmanuel Sedicol
+ */
 public interface Interface extends Remote {
     // Calculator Operations
     int add(int x, int y) throws RemoteException, ServerNotActiveException;
